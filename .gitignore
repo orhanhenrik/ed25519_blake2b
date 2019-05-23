@@ -24,3 +24,5 @@ ed25519_blake2b-*.tar
 
 # The directory that rustler will write compiled artifacts to.
 /priv
+
+/native/ed25519blake2b/target

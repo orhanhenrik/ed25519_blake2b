@@ -3,13 +3,15 @@ extern crate rustler;
 // #[macro_use]
 extern crate rustler_codegen;
 // #[macro_use]
+extern crate blake2;
 extern crate ed25519_dalek;
 extern crate lazy_static;
 
+use blake2::digest::{Input, VariableOutput};
+use blake2::VarBlake2b;
 use ed25519_dalek::{verify_batch, Keypair, PublicKey, SecretKey, Signature};
 use rustler::types::binary::{Binary, OwnedBinary};
 use rustler::types::list::ListIterator;
-
 use rustler::{Encoder, Env, NifResult, Term};
 use std::io::Write;
 
@@ -35,7 +37,8 @@ rustler_export_nifs! {
         ("derive_public_key", 1, derive_public_key),
         ("sign", 2, sign),
         ("verify", 3, verify),
-        ("verify_batch", 3, verify_batch_nif)
+        ("verify_batch", 3, verify_batch_nif),
+        ("hash", 2, hash)
     ],
     None
 }
@@ -141,4 +144,17 @@ fn verify_batch_nif<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult<Term<'a>> 
         Err(_) => return Ok((atoms::error(), atoms::invalid_signature()).encode(env)),
         Ok(_) => return Ok(atoms::ok().encode(env)),
     };
+}
+
+fn hash<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult<Term<'a>> {
+    let message = args[0].decode::<Binary>()?.as_slice();
+    let digest_size = args[1].decode::<usize>()?;
+
+    let mut hasher = VarBlake2b::new(digest_size).unwrap();
+    hasher.input(message);
+    let result = hasher.vec_result();
+    let mut bin = OwnedBinary::new(result.len()).unwrap();
+    bin.as_mut_slice().write(&result).unwrap();
+
+    return Ok(bin.release(env).encode(env));
 }

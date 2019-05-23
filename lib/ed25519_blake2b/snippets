@@ -1,5 +1,0 @@
-sk = <<0::size(256)>>
-{:ok, pk} = Ed25519Blake2b.Native.derive_public_key(sk)
-{:ok, sig} = Ed25519Blake2b.Native.sign(sk<>pk, <<1>>)
-# Ed25519Blake2b.Native.verify(<<1>>, sig, pk)
-Ed25519Blake2b.Native.verify_batch([<<1>>], [sig], [pk])

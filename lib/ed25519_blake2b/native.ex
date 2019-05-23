@@ -14,4 +14,7 @@ defmodule Ed25519Blake2b.Native do
   @spec verify_batch([binary()], [binary()], [binary()]) ::
           :ok | {:error, :invalid_public_key | :invalid_signature}
   def verify_batch(_messages, _signatures, _public_keys), do: :erlang.nif_error(:nif_not_loaded)
+
+  @spec hash(binary(), pos_integer()) :: binary()
+  def hash(_message, _digest_size), do: :erlang.nif_error(:nif_not_loaded)
 end
