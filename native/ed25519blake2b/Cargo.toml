@@ -12,5 +12,6 @@ crate-type = ["dylib"]
 rustler = "0.20.0"
 rustler_codegen = "0.20.0"
 lazy_static = "1.0"
-ed25519-dalek = { git="https://github.com/orhanhenrik/ed25519-dalek-blake2b", rev="089cc69eff438aa0f864a25b0c3140f098a8e60a" }
+ed25519-dalek = "0.9"
 blake2 = "0.8"
+rand = "0.6"

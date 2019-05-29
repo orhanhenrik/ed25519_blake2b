@@ -5,7 +5,7 @@ defmodule Ed25519Blake2b.MixProject do
     [
       app: :ed25519_blake2b,
       package: package(),
-      version: "0.1.0",
+      version: "0.1.1",
       elixir: "~> 1.8",
       docs: docs(),
       start_permanent: Mix.env() == :prod,
@@ -24,6 +24,7 @@ defmodule Ed25519Blake2b.MixProject do
   defp deps do
     [
       {:rustler, "~> 0.20.0"},
+      {:benchee, "~> 1.0", only: [:dev]},
       {:ex_doc, "~> 0.19", only: [:dev], runtime: false}
     ]
   end

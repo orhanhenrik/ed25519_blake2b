@@ -8,6 +8,7 @@ extern crate ed25519_dalek;
 extern crate lazy_static;
 
 use blake2::digest::{Input, VariableOutput};
+use blake2::Blake2b;
 use blake2::VarBlake2b;
 use ed25519_dalek::{verify_batch, Keypair, PublicKey, SecretKey, Signature};
 use rustler::types::binary::{Binary, OwnedBinary};
@@ -51,14 +52,8 @@ fn derive_public_key<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult<Term<'a>>
         Ok(r) => r,
     };
 
-    let public_key: PublicKey = (&secret_key).into();
-    // let keypair: Keypair = Keypair {
-    //     secret: secret_key,
-    //     public: public_key,
-    // };
+    let public_key: PublicKey = PublicKey::from_secret::<Blake2b>(&secret_key);
 
-    // let sig2: Signature = keypair.sign(&secret_key_bytes);
-    // let result = sig2.to_bytes();
     let result = public_key.to_bytes();
 
     let mut bin = OwnedBinary::new(result.len()).unwrap();
@@ -76,7 +71,7 @@ fn sign<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult<Term<'a>> {
         Ok(r) => r,
     };
 
-    let sig: Signature = keypair.sign(&message);
+    let sig: Signature = keypair.sign::<Blake2b>(&message);
     let result = sig.to_bytes();
 
     let mut bin = OwnedBinary::new(result.len()).unwrap();
@@ -99,7 +94,7 @@ fn verify<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult<Term<'a>> {
         Ok(r) => r,
     };
 
-    match public_key.verify(message, &signature) {
+    match public_key.verify::<Blake2b>(message, &signature) {
         Err(_) => Ok((atoms::error(), atoms::invalid_signature()).encode(env)),
         Ok(_) => Ok(atoms::ok().encode(env)),
     }
@@ -140,7 +135,7 @@ fn verify_batch_nif<'a>(env: Env<'a>, args: &[Term<'a>]) -> NifResult<Term<'a>> 
         Ok(r) => r,
     };
 
-    match verify_batch(&messages[..], &signatures[..], &public_keys[..]) {
+    match verify_batch::<Blake2b>(&messages[..], &signatures[..], &public_keys[..]) {
         Err(_) => return Ok((atoms::error(), atoms::invalid_signature()).encode(env)),
         Ok(_) => return Ok(atoms::ok().encode(env)),
     };

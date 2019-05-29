@@ -9,7 +9,7 @@ The package can be installed by adding `ed25519_blake2b` to your list of depende
 ```elixir
 def deps do
   [
-    {:ed25519_blake2b, "~> 0.1.0"}
+    {:ed25519_blake2b, "~> 0.1.1"}
   ]
 end
 ```
