@@ -5,7 +5,7 @@ defmodule Ed25519Blake2b.MixProject do
     [
       app: :ed25519_blake2b,
       package: package(),
-      version: "0.1.1",
+      version: "0.2.0",
       elixir: "~> 1.8",
       docs: docs(),
       start_permanent: Mix.env() == :prod,

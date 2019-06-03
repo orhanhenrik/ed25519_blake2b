@@ -11,6 +11,7 @@ use blake2::digest::{Input, VariableOutput};
 use blake2::Blake2b;
 use blake2::VarBlake2b;
 use ed25519_dalek::{verify_batch, Keypair, PublicKey, SecretKey, Signature};
+use rustler::schedule::SchedulerFlags;
 use rustler::types::binary::{Binary, OwnedBinary};
 use rustler::types::list::ListIterator;
 use rustler::{Encoder, Env, NifResult, Term};
@@ -38,7 +39,7 @@ rustler_export_nifs! {
         ("derive_public_key", 1, derive_public_key),
         ("sign", 2, sign),
         ("verify", 3, verify),
-        ("verify_batch", 3, verify_batch_nif),
+        ("verify_batch", 3, verify_batch_nif, SchedulerFlags::DirtyCpu),
         ("hash", 2, hash)
     ],
     None
